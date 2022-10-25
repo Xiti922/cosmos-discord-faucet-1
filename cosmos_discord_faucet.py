@@ -298,8 +298,7 @@ async def token_request(message, testnet: dict):
                                               f'{testnet["amount_to_send"] + DENOM},'
                                               f'{transfer},'
                                               f'{balance}')
-        except e:
-            logging.info(str(e))
+        except Exception:
             await message.reply('❗ request could not be processed')
             del ACTIVE_REQUESTS[testnet['name']][requester.id]
             del ACTIVE_REQUESTS[testnet['name']][address]

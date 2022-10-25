@@ -11,8 +11,8 @@ Outputs per chain:
 - Requests made in the last reporting period.
 - Unique addresses to date.
 - Unique addresses in the last reporting period.
-- uatom sent to date.
-- uatom sent in the last reporting period.
+- mand sent to date.
+- mand sent in the last reporting period.
 - Faucet balance.
 """
 
