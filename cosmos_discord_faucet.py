@@ -32,6 +32,7 @@ try:
     LISTENING_CHANNELS = list(
         config['discord']['channels_to_listen'].split(','))
     DENOM = str(config['cosmos']['denomination'])
+    FEEDENOM = str(config['cosmos']['feedenom'])
     testnets = config['testnets']
     for net in testnets:
         testnets[net]['name'] = net
@@ -278,7 +279,7 @@ async def token_request(message, testnet: dict):
         request = {'sender': testnet['faucet_address'],
                    'recipient': address,
                    'amount': testnet['amount_to_send'] + DENOM,
-                   'fees': testnet['tx_fees'] + DENOM,
+                   'fees': testnet['tx_fees'] + FEEDENOM,
                    'chain_id': testnet['chain_id'],
                    'node': testnet['node_url']}
         try:
