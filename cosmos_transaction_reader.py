@@ -4,7 +4,7 @@ Parses transaction log from faucet bot.
 The reader expects the following CSV format:
 ISO Date/Time,chain,address,amount sent,hash ID,faucet balance
 For example:
-2022-01-01T10:10:10,theta,cosmos123...xyz,10000mand,12AB...90YZ,5000000mand
+2022-01-01T10:10:10,athena-2,terp123...xyz,10000uterpx,12AB...90YZ,5uterpx
 """
 
 import csv
@@ -73,7 +73,7 @@ class TransactionReader():
             self._stats[chain]['total_requests'] = len(masked_chain)
             self._stats[chain]['total_accounts'] = len(
                 np.unique(masked_chain[:, 2]))
-            token_array = np.array([int(token.replace('mand', ''))
+            token_array = np.array([int(token.replace('uterpx', ''))
                                     for token in masked_chain[:, 3]])
             self._stats[chain]['total_tokens'] = np.sum(token_array)
 
@@ -107,7 +107,7 @@ class TransactionReader():
                     self._stats[chain]['recent_accounts'] += 1
 
             # Save the total tokens sent
-            token_array = np.array([int(token.replace('mand', ''))
+            token_array = np.array([int(token.replace('uterpx', ''))
                                     for token in recent_txs[:, 3]])
             self._stats[chain]['recent_tokens'] = np.sum(token_array)
 
@@ -120,7 +120,7 @@ class TransactionReader():
             chain_mask = (self._data[:, 1] == chain)
             chain_masked_array = self._data[chain_mask, :]
             self._stats[chain]['faucet_balance'] = \
-                int(chain_masked_array[-1][-1].replace('mand', ''))
+                int(chain_masked_array[-1][-1].replace('uterpx', ''))
 
     def process_stats(self):
         """
