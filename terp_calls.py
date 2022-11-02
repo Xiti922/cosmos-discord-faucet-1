@@ -1,5 +1,5 @@
 """
-mande-chaind utility functions
+terpd utility functions
 - query bank balance
 - query tx
 - node status
@@ -13,9 +13,9 @@ import logging
 
 def check_address(address: str):
     """
-    mande-chaind keys parse <address>
+    terpd keys parse <address>
     """
-    check = subprocess.run(["mande-chaind", "keys", "parse",
+    check = subprocess.run(["terpd", "keys", "parse",
                             f"{address}",
                             '--output=json'],
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -35,9 +35,9 @@ def check_address(address: str):
 
 def get_balance(address: str, node: str, chain_id: str):
     """
-    mande-chaind query bank balances <address> <node> <chain-id>
+    terpd query bank balances <address> <node> <chain-id>
     """
-    balance = subprocess.run(["mande-chaind", "query", "bank", "balances",
+    balance = subprocess.run(["terpd", "query", "bank", "balances",
                               f"{address}",
                               f"--node={node}",
                               f"--chain-id={chain_id}",
@@ -59,10 +59,10 @@ def get_balance(address: str, node: str, chain_id: str):
 
 def get_node_status(node: str):
     """
-    mande-chaind status <node>
+    terpd status <node>
     """
     status = subprocess.run(
-        ['mande-chaind', 'status', f'--node={node}'],
+        ['terpd', 'status', f'--node={node}'],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     try:
@@ -85,17 +85,17 @@ def get_node_status(node: str):
 
 def get_tx_info(hash_id: str, node: str, chain_id: str):
     """
-    mande-chaind query tx <tx-hash> <node> <chain-id>
+    terpd query tx <tx-hash> <node> <chain-id>
     """
-    tx_mande = subprocess.run(['mande-chaind', 'query', 'tx',
+    tx_terp = subprocess.run(['terpd', 'query', 'tx',
                               f'{hash_id}',
                               f'--node={node}',
                               f'--chain-id={chain_id}',
                               '--output=json'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
-        tx_mande.check_returncode()
-        tx_response = json.loads(tx_mande.stdout)
+        tx_terp.check_returncode()
+        tx_response = json.loads(tx_terp.stdout)
         tx_body = tx_response['tx']['body']['messages'][0]
         tx_out = {}
         tx_out['height'] = tx_response['height']
@@ -115,7 +115,7 @@ def get_tx_info(hash_id: str, node: str, chain_id: str):
             return None
         return tx_out
     except subprocess.CalledProcessError as cpe:
-        output = str(tx_mande.stderr).split('\n', maxsplit=1)
+        output = str(tx_terp.stderr).split('\n', maxsplit=1)
         logging.error("%s[%s]", cpe, output)
         raise cpe
     except (TypeError, KeyError) as err:
@@ -132,12 +132,12 @@ def tx_send(request: dict):
     - "fees"
     - "node"
     - "chain_id"
-    mande-chaind tx bank send <from address> <to address> <amount>
+    terpd tx bank send <from address> <to address> <amount>
                        <fees> <node> <chain-id>
                        --keyring-backend=test -y
 
     """
-    tx_mande = subprocess.run(['mande-chaind', 'tx', 'bank', 'send',
+    tx_terp = subprocess.run(['terpd', 'tx', 'bank', 'send',
                               f'{request["sender"]}',
                               f'{request["recipient"]}',
                               f'{request["amount"]}',
@@ -149,15 +149,15 @@ def tx_send(request: dict):
                               '-y'],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
-        tx_mande.check_returncode()
-        response = json.loads(tx_mande.stdout)
+        tx_terp.check_returncode()
+        response = json.loads(tx_terp.stdout)
         return response['txhash']
     except subprocess.CalledProcessError as cpe:
-        output = str(tx_mande.stderr).split('\n', maxsplit=1)
+        output = str(tx_terp.stderr).split('\n', maxsplit=1)
         logging.error("%s[%s]", cpe, output)
         raise cpe
     except (TypeError, KeyError) as err:
-        output = tx_mande.stderr
+        output = tx_terp.stderr
         logging.critical(
             'Could not read %s in tx response: %s', err, output)
         raise err
