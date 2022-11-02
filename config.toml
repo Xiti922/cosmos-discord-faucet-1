@@ -20,7 +20,7 @@ feedenom       = "upersyx"
 [discord]
 bot_token = ""
 # comma separated list of channels
-channels_to_listen = "test-channel2"
+channels_to_listen = "faucet"
 # how often user can request tokens from faucet (seconds)
 # 10800 = 3  hours
 # 86400 = 24 hours
